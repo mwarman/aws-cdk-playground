@@ -3,6 +3,7 @@ import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as cloudfront_origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as s3_deployment from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 
 export class CloudFrontSpaStack extends cdk.Stack {
@@ -18,6 +19,16 @@ export class CloudFrontSpaStack extends cdk.Stack {
 
     // S3 bucket for the application
     const bucket = new s3.Bucket(this, "CloudFrontSpaBucket");
+
+    // S3 bucket deployment
+    const deployment = new s3_deployment.BucketDeployment(
+      this,
+      "CloudFrontSpaDeployment",
+      {
+        sources: [s3_deployment.Source.asset("../dist")],
+        destinationBucket: bucket,
+      }
+    );
 
     // CloudFront distribution
     const distribution = new cloudfront.Distribution(
