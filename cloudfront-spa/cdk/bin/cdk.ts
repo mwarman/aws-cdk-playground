@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
+
 import { CloudFrontSpaStack } from "../lib/cdk-stack";
+import { CDK_ENV } from "../lib/config";
 
 const app = new cdk.App();
-new CloudFrontSpaStack(app, "CloudFrontSpaStack", {
+const stack = new CloudFrontSpaStack(app, "CloudFrontSpaStack", {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -21,3 +23,8 @@ new CloudFrontSpaStack(app, "CloudFrontSpaStack", {
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
+
+cdk.Tags.of(stack).add("App", "cdk-playground.leanstacks.net");
+cdk.Tags.of(stack).add("Env", CDK_ENV);
+cdk.Tags.of(stack).add("OU", "leanstacks");
+cdk.Tags.of(stack).add("Owner", "Matthew Warman");

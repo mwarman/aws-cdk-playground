@@ -8,6 +8,12 @@ import * as route53 from "aws-cdk-lib/aws-route53";
 import * as route53_targets from "aws-cdk-lib/aws-route53-targets";
 import { Construct } from "constructs";
 
+import {
+  CDK_CERTIFICATE_ARN,
+  CDK_HOSTED_ZONE_ID,
+  CDK_HOSTED_ZONE_NAME,
+} from "./config";
+
 export class CloudFrontSpaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -16,7 +22,7 @@ export class CloudFrontSpaStack extends cdk.Stack {
     const certificate = certificatemanager.Certificate.fromCertificateArn(
       this,
       "CloudFrontSpaCertificate",
-      "arn:aws:acm:us-east-1:988218269141:certificate/3d110b0f-8b3d-4ddc-bbd8-fab08ae6f038"
+      CDK_CERTIFICATE_ARN
     );
 
     // S3 bucket for the application
@@ -73,8 +79,8 @@ export class CloudFrontSpaStack extends cdk.Stack {
       this,
       "CloudFrontSpaZone",
       {
-        hostedZoneId: "Z0551680JTSC5PSAEQQB",
-        zoneName: "dev.leanstacks.net",
+        hostedZoneId: CDK_HOSTED_ZONE_ID,
+        zoneName: CDK_HOSTED_ZONE_NAME,
       }
     );
 
