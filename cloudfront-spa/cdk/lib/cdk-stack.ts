@@ -20,7 +20,10 @@ export class CloudFrontSpaStack extends cdk.Stack {
     );
 
     // S3 bucket for the application
-    const bucket = new s3.Bucket(this, "CloudFrontSpaBucket");
+    const bucket = new s3.Bucket(this, "CloudFrontSpaBucket", {
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    });
 
     // S3 bucket deployment
     const deployment = new s3_deployment.BucketDeployment(
