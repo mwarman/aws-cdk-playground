@@ -1,7 +1,7 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-import awsLogo from "./assets/aws-cdk.png";
+import awsLogo from "./assets/aws-cdk.svg";
 import "./App.css";
 
 function App() {

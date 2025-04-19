@@ -20,7 +20,7 @@ Run these application scripts from the base project directory.
 
 #### `npm run dev`
 
-Runs the app in development mode. Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+Runs the app in development mode. Open [http://localhost:5173/](http://localhost:5173/) to view it in the browser.
 
 #### `npm run build`
 
@@ -36,7 +36,8 @@ Synthesize a CDK application to produce an AWS CloudFormation template for each 
 
 #### `npm run cdk deploy`
 
-Deploy one or more AWS CDK stacks to an AWS environment.
+Deploy one or more AWS CDK stacks to an AWS environment. Once deployment is complete, open
+[https://cdk-playground.dev.leanstacks.net/](https://cdk-playground.dev.leanstacks.net/) to view it in the browser.
 
 #### `npm run cdk destroy`
 
