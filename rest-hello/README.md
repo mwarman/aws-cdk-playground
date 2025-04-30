@@ -1,14 +1,41 @@
-# Welcome to your CDK TypeScript project
+# AWS CDK Example: Hello World REST API
 
-This is a blank project for CDK development with TypeScript.
+This example AWS CDK application deploys a simple Lambda function and an API Gateway resource.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## About
 
-## Useful commands
+This is a very simple REST API endpoint backed by a Lambda function. The Lambda function is a contrived example, returning a static JSON response. A real world application would use a framework such as MiddyJS for the Lambda function.
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+Other examples in this repository will build upon this example with more complexity.
+
+## Available Scripts
+
+### Application Scripts
+
+Run these application scripts from the base project directory.
+
+#### `npm run build`
+
+Builds the Lambda function to prepare for deployment. Run this before using the CDK to deploy to AWS.
+
+### CDK Scripts
+
+Run these AWS CDK scripts from the `/cdk` sub-directory.
+
+#### `npm run cdk synth`
+
+Synthesize a CDK application to produce an AWS CloudFormation template for each stack.
+
+#### `npm run cdk deploy`
+
+Deploy one or more AWS CDK stacks to an AWS environment. Once deployment is complete, you may access the API endpoint with a simple `curl` command such as:
+
+Note: Locate the endpoint URL from the stack deployment outputs and add the `/hello` path.
+
+```
+curl https://<api-id>.execute-api.<region>.amazonaws.com/prod/hello
+```
+
+#### `npm run cdk destroy`
+
+Delete one or more AWS CDK stacks from the AWS environment.
