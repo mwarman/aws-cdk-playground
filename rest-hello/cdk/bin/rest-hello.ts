@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
+
 import { RestHelloStack } from "../lib/rest-hello-stack";
+import { CDK_ENV } from "../lib/config";
 
 const app = new cdk.App();
 const stack = new RestHelloStack(app, "RestHelloStack", {
-  description: "CDK Playground Rest Hello Stack",
+  description: "CDK Playground REST Hello Stack",
 
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
@@ -25,6 +27,6 @@ const stack = new RestHelloStack(app, "RestHelloStack", {
 });
 
 cdk.Tags.of(stack).add("App", "cdk-playground.leanstacks.net");
-cdk.Tags.of(stack).add("Env", "dev");
+cdk.Tags.of(stack).add("Env", CDK_ENV);
 cdk.Tags.of(stack).add("OU", "leanstacks");
 cdk.Tags.of(stack).add("Owner", "Matthew Warman");
