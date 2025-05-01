@@ -3,7 +3,9 @@ import * as cdk from "aws-cdk-lib";
 import { RestHelloStack } from "../lib/rest-hello-stack";
 
 const app = new cdk.App();
-new RestHelloStack(app, "RestHelloStack", {
+const stack = new RestHelloStack(app, "RestHelloStack", {
+  description: "CDK Playground Rest Hello Stack",
+
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -21,3 +23,8 @@ new RestHelloStack(app, "RestHelloStack", {
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
+
+cdk.Tags.of(stack).add("App", "cdk-playground.leanstacks.net");
+cdk.Tags.of(stack).add("Env", "dev");
+cdk.Tags.of(stack).add("OU", "leanstacks");
+cdk.Tags.of(stack).add("Owner", "Matthew Warman");
