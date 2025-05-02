@@ -1,0 +1,14 @@
+{
+  "name": "rest-hello",
+  "version": "1.0.0",
+  "description": "AWS CDK example with Lambda and API Gateway",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matt Warman",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "5.8.3"
+  }
+}
