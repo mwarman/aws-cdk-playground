@@ -1,6 +1,8 @@
 import { Bucket, ListBucketsCommand, S3Client } from "@aws-sdk/client-s3";
 
-const AWS_REGION = process.env.AWS_REGION || "us-east-1";
+import { DEFAULT_AWS_REGION } from "../utils/constants";
+
+const AWS_REGION = process.env.AWS_REGION || DEFAULT_AWS_REGION;
 console.log("S3Service::AWS_REGION::", AWS_REGION);
 
 export const listBuckets = async (): Promise<Bucket[]> => {

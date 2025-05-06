@@ -1,10 +1,13 @@
+import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda";
+
 import { listBuckets } from "../services/s3-service";
 
-const handler = async (event: any) => {
-  console.log("ListBuckets::event::", event);
+const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
+  console.log("ListBuckets::handler::", { event, context });
 
   try {
     const buckets = await listBuckets();
+
     return {
       statusCode: 200,
       body: JSON.stringify({

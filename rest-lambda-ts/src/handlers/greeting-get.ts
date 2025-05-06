@@ -1,17 +1,33 @@
-const handler = async (event: any) => {
-  console.log("GetGreeting::event::", event);
-  console.log("GetGreeting::env::", process.env);
+import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda";
 
-  const DEFAULT_GREETING_TEXT = "Hello world!";
-  const message = process.env.GREETING_TEXT || DEFAULT_GREETING_TEXT;
+import { DEFAULT_GREETING_TEXT } from "../utils/constants";
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message,
-      event,
-    }),
-  };
+const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
+  console.log("GetGreeting::handler::", { event, context });
+
+  try {
+    const message = process.env.GREETING_TEXT || DEFAULT_GREETING_TEXT;
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message,
+      }),
+    };
+  } catch (error) {
+    console.error("GetGreeting::error::", error);
+    let errorMessage = "Unknown error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: "Error retrieving greeting",
+        error: errorMessage,
+      }),
+    };
+  }
 };
 
 export { handler };

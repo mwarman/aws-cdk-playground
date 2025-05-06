@@ -17,6 +17,7 @@
     "constructs": "10.4.2"
   },
   "devDependencies": {
+    "@types/aws-lambda": "8.10.149",
     "@types/jest": "29.5.14",
     "@types/node": "22.15.3",
     "aws-cdk": "2.1013.0",
