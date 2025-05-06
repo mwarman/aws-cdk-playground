@@ -6,7 +6,7 @@ This example AWS CDK application deploys a Lambda function and an API Gateway re
 
 ## About
 
-This is a REST API endpoint backed by a Lambda function. The Lambda function depends on external libraries. The CDK resources demonstrate how to bundle a more complex Lambda function with all of it's dependencies.
+This is a REST API endpoint backed by a Lambda function. The Lambda function depends on external libraries. The CDK resources demonstrate how to bundle a more complex Lambda function with all of its dependencies.
 
 Other examples in this repository will build upon this example with more complexity.
 
