@@ -1,0 +1,31 @@
+{
+  "name": "rest-lambda-ts",
+  "version": "0.1.0",
+  "bin": {
+    "rest-lambda-ts": "cdk/rest-lambda-ts.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "cdk": "cdk",
+    "clean": "rimraf cdk.out",
+    "test": "jest",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.802.0",
+    "aws-cdk-lib": "2.194.0",
+    "constructs": "10.4.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.149",
+    "@types/jest": "29.5.14",
+    "@types/node": "22.15.3",
+    "aws-cdk": "2.1013.0",
+    "esbuild": "0.25.3",
+    "jest": "29.7.0",
+    "rimraf": "6.0.1",
+    "ts-jest": "29.3.2",
+    "ts-node": "10.9.2",
+    "typescript": "5.8.3"
+  }
+}
