@@ -10,17 +10,49 @@ This is a REST API endpoint backed by a Lambda function. The Lambda function dep
 
 Other examples in this repository will build upon this example with more complexity.
 
-## Available Scripts
+## Using this example
 
-### Application Scripts
+To use this example, run the following commands at a terminal prompt from the example base directory.
+
+Switch to the required version of Node with [Node Version Manager](https://github.com/nvm-sh/nvm).
+
+```
+nvm use
+```
+
+Install dependencies.
+
+```
+npm install
+```
+
+Synthesize the AWS CDK application into a CloudFormation template. This step is optional, but useful if you want to see a YAML version of the template.
+
+```
+npm run cdk synth
+```
+
+Deploy the application to AWS.
+
+```
+npm run cdk deploy
+```
+
+The AWS CDK will synthesize the CloudFormation template and deploy the stack(s) to AWS. The outputs will contain the URLs of all API endpoints with which you may interact.
+
+When you are finished, clean up the AWS resources.
+
+```
+npm run cdk destroy
+```
+
+## Available scripts
+
+### Application scripts
 
 Run these application scripts from the base project directory.
 
-#### `npm run build`
-
-Builds the Lambda function to prepare for deployment. Run this before using the CDK to deploy to AWS.
-
-### CDK Scripts
+### CDK scripts
 
 Run these AWS CDK scripts from the `/cdk` sub-directory.
 
