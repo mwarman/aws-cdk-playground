@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
 
-import { CDK_ENV } from "./utils/config";
+import { CDK_AWS_REGION, CDK_DEFAULT_ACCOUNT, CDK_ENV } from "./utils/config";
 import { RestDynamodbStack } from "./stacks/rest-dynamodb-stack";
 
 const app = new cdk.App();
 const stack = new RestDynamodbStack(app, "RestDynamodbStack", {
-  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+  description: "CDK Playground - Rest DynamoDB Stack",
+  env: { account: CDK_DEFAULT_ACCOUNT, region: CDK_AWS_REGION },
 });
 
 cdk.Tags.of(stack).add("App", "cdk-playground.leanstacks.net");
