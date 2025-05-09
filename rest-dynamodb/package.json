@@ -14,11 +14,13 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.806.0",
     "@aws-sdk/lib-dynamodb": "3.806.0",
+    "lodash": "4.17.21",
     "zod": "3.24.4"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.149",
     "@types/jest": "29.5.14",
+    "@types/lodash": "4.17.16",
     "@types/node": "22.15.17",
     "aws-cdk": "2.1014.0",
     "aws-cdk-lib": "2.195.0",

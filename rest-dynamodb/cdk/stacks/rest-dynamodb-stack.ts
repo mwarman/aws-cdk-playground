@@ -38,7 +38,7 @@ export class RestDynamodbStack extends cdk.Stack {
     });
     functionRole.addToPolicy(
       new iam.PolicyStatement({
-        actions: ["dynamodb:Scan", "dynamodb:PutItem"],
+        actions: ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:Scan"],
         resources: [userTable.tableArn],
       })
     );
@@ -96,16 +96,45 @@ export class RestDynamodbStack extends cdk.Stack {
     usersResource.addMethod("GET", new apigateway.LambdaIntegration(listUsersFunction));
 
     /**
+     * Add a resource to the API Gateway for the "users" path
+     */
+    const RESOURCE_PATH_USER_ID = "{userId}";
+    const userIdResource = usersResource.addResource(RESOURCE_PATH_USER_ID);
+
+    /**
+     * Create a new Lambda function to find a user by ID
+     */
+    const findUserLogGroup = new logs.LogGroup(this, "FindUserLogGroup", {
+      retention: logs.RetentionDays.ONE_WEEK,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
+    const findUserFunction = new lambda_nodejs.NodejsFunction(this, "FindUserFunction", {
+      entry: "src/handlers/users-find.ts",
+      handler: "handler",
+      runtime: lambda.Runtime.NODEJS_22_X,
+      memorySize: 1024,
+      timeout: cdk.Duration.seconds(6),
+      logGroup: findUserLogGroup,
+      role: functionRole,
+      environment: {
+        TABLE_NAME_USER: userTable.tableName,
+      },
+    });
+
+    userIdResource.addMethod("GET", new apigateway.LambdaIntegration(findUserFunction));
+
+    /**
      * Stack outputs
      */
     new cdk.CfnOutput(this, "UserTableName", {
       value: userTable.tableName,
-      description: "The name of the DynamoDB table for users",
+      description: "The DynamoDB table name for users",
     });
 
-    new cdk.CfnOutput(this, "UsersApiUrl", {
-      value: `${api.url}${RESOURCE_PATH_USERS}`,
-      description: "URL for the List Users API endpoint",
+    new cdk.CfnOutput(this, "ApiUrl", {
+      value: `${api.url}`,
+      description: "The API Gateway URL",
     });
   }
 }
