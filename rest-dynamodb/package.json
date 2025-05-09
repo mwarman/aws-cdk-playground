@@ -12,16 +12,16 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.804.0",
-    "@aws-sdk/lib-dynamodb": "3.804.0",
+    "@aws-sdk/client-dynamodb": "3.806.0",
+    "@aws-sdk/lib-dynamodb": "3.806.0",
     "zod": "3.24.4"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.149",
     "@types/jest": "29.5.14",
-    "@types/node": "22.15.14",
-    "aws-cdk": "2.1013.0",
-    "aws-cdk-lib": "2.194.0",
+    "@types/node": "22.15.17",
+    "aws-cdk": "2.1014.0",
+    "aws-cdk-lib": "2.195.0",
     "constructs": "10.4.2",
     "dotenv": "16.5.0",
     "esbuild": "0.25.4",

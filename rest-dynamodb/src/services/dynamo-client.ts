@@ -1,6 +1,9 @@
 import { DynamoDBClient, DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 import {
   DynamoDBDocumentClient,
+  PutCommand,
+  PutCommandInput,
+  PutCommandOutput,
   QueryCommand,
   QueryCommandInput,
   QueryCommandOutput,
@@ -30,6 +33,10 @@ const dynamoDbClientConfig: DynamoDBClientConfig = {
 const ddbClient = new DynamoDBClient(dynamoDbClientConfig);
 const ddbDocClient = DynamoDBDocumentClient.from(ddbClient, translateConfig);
 
+const putItem = (input: PutCommandInput): Promise<PutCommandOutput> => {
+  return ddbDocClient.send(new PutCommand(input));
+};
+
 const queryItems = (input: QueryCommandInput): Promise<QueryCommandOutput> => {
   return ddbDocClient.send(new QueryCommand(input));
 };
@@ -38,9 +45,8 @@ const scanItems = (input: ScanCommandInput): Promise<ScanCommandOutput> => {
   return ddbDocClient.send(new ScanCommand(input));
 };
 
-const DynamoClient = {
+export const DynamoClient = {
+  putItem,
   queryItems,
   scanItems,
 };
-
-export default DynamoClient;

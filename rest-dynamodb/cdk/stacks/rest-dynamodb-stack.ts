@@ -15,7 +15,6 @@ export class RestDynamodbStack extends cdk.Stack {
      * Create a new DynamoDB table for storing user data
      */
     const userTable = new dynamodb.TableV2(this, "UserTable", {
-      tableName: "User",
       partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "sk", type: dynamodb.AttributeType.STRING },
       billing: dynamodb.Billing.onDemand(),
@@ -39,7 +38,7 @@ export class RestDynamodbStack extends cdk.Stack {
     });
     functionRole.addToPolicy(
       new iam.PolicyStatement({
-        actions: ["dynamodb:Scan"],
+        actions: ["dynamodb:Scan", "dynamodb:PutItem"],
         resources: [userTable.tableArn],
       })
     );
@@ -51,10 +50,32 @@ export class RestDynamodbStack extends cdk.Stack {
     const usersResource = api.root.addResource(RESOURCE_PATH_USERS);
 
     /**
+     * Create a new Lambda function for creating users
+     */
+    const createUserLogGroup = new logs.LogGroup(this, "CreateUserFunctionLogGroup", {
+      retention: logs.RetentionDays.ONE_WEEK,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
+    const createUserFunction = new lambda_nodejs.NodejsFunction(this, "CreateUserFunction", {
+      entry: "src/handlers/users-create.ts",
+      handler: "handler",
+      runtime: lambda.Runtime.NODEJS_22_X,
+      memorySize: 1024,
+      timeout: cdk.Duration.seconds(6),
+      logGroup: createUserLogGroup,
+      role: functionRole,
+      environment: {
+        TABLE_NAME_USER: userTable.tableName,
+      },
+    });
+
+    usersResource.addMethod("POST", new apigateway.LambdaIntegration(createUserFunction));
+
+    /**
      * Create a new Lambda function for listing users
      */
     const listUsersLogGroup = new logs.LogGroup(this, "ListUsersLogGroup", {
-      logGroupName: "/aws/lambda/ListUsersFunction",
       retention: logs.RetentionDays.ONE_WEEK,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
@@ -77,7 +98,12 @@ export class RestDynamodbStack extends cdk.Stack {
     /**
      * Stack outputs
      */
-    new cdk.CfnOutput(this, "ListUsersApiUrl", {
+    new cdk.CfnOutput(this, "UserTableName", {
+      value: userTable.tableName,
+      description: "The name of the DynamoDB table for users",
+    });
+
+    new cdk.CfnOutput(this, "UsersApiUrl", {
       value: `${api.url}${RESOURCE_PATH_USERS}`,
       description: "URL for the List Users API endpoint",
     });
