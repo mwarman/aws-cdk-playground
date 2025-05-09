@@ -10,12 +10,12 @@ import {
   PutCommand,
   PutCommandInput,
   PutCommandOutput,
-  QueryCommand,
-  QueryCommandInput,
-  QueryCommandOutput,
   ScanCommand,
   ScanCommandInput,
   ScanCommandOutput,
+  UpdateCommand,
+  UpdateCommandInput,
+  UpdateCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
 import { AWS_REGION } from "@/utils/config";
 
@@ -51,18 +51,18 @@ const putItem = (input: PutCommandInput): Promise<PutCommandOutput> => {
   return ddbDocClient.send(new PutCommand(input));
 };
 
-const queryItems = (input: QueryCommandInput): Promise<QueryCommandOutput> => {
-  return ddbDocClient.send(new QueryCommand(input));
-};
-
 const scanItems = (input: ScanCommandInput): Promise<ScanCommandOutput> => {
   return ddbDocClient.send(new ScanCommand(input));
+};
+
+const updateItem = (input: UpdateCommandInput): Promise<UpdateCommandOutput> => {
+  return ddbDocClient.send(new UpdateCommand(input));
 };
 
 export const DynamoClient = {
   deleteItem,
   getItem,
   putItem,
-  queryItems,
   scanItems,
+  updateItem,
 };

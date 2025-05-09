@@ -25,3 +25,5 @@ export type User = {
 export type UserItem = Keys & User;
 
 export type CreateUserDTO = Omit<User, "userId" | "createdAt" | "updatedAt">;
+
+export type UpdateUserDTO = Pick<User, "userId" | "firstName" | "lastName" | "email">;

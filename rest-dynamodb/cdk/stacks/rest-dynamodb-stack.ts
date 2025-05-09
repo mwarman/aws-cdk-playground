@@ -38,7 +38,13 @@ export class RestDynamodbStack extends cdk.Stack {
     });
     functionRole.addToPolicy(
       new iam.PolicyStatement({
-        actions: ["dynamodb:DeleteItem", "dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:Scan"],
+        actions: [
+          "dynamodb:DeleteItem",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:Scan",
+          "dynamodb:UpdateItem",
+        ],
         resources: [userTable.tableArn],
       })
     );
@@ -123,6 +129,29 @@ export class RestDynamodbStack extends cdk.Stack {
     });
 
     userIdResource.addMethod("GET", new apigateway.LambdaIntegration(findUserFunction));
+
+    /**
+     * Create a new Lambda function to update a user
+     */
+    const updateUserLogGroup = new logs.LogGroup(this, "UpdateUserLogGroup", {
+      retention: logs.RetentionDays.ONE_WEEK,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
+    const updateUserFunction = new lambda_nodejs.NodejsFunction(this, "UpdateUserFunction", {
+      entry: "src/handlers/users-update.ts",
+      handler: "handler",
+      runtime: lambda.Runtime.NODEJS_22_X,
+      memorySize: 1024,
+      timeout: cdk.Duration.seconds(6),
+      logGroup: updateUserLogGroup,
+      role: functionRole,
+      environment: {
+        TABLE_NAME_USER: userTable.tableName,
+      },
+    });
+
+    userIdResource.addMethod("PUT", new apigateway.LambdaIntegration(updateUserFunction));
 
     /**
      * Create a new Lambda function to delete a user by ID

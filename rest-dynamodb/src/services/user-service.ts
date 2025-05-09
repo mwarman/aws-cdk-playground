@@ -1,11 +1,12 @@
-import { GetCommandInput, PutCommandInput } from "@aws-sdk/lib-dynamodb";
+import { GetCommandInput, PutCommandInput, UpdateCommandInput } from "@aws-sdk/lib-dynamodb";
 import { map, omit } from "lodash";
 
-import { CreateUserDTO, User, UserItem } from "@/types/user";
+import { CreateUserDTO, UpdateUserDTO, User, UserItem } from "@/types/user";
 import { DynamoClient } from "./dynamo-client";
 import { ID } from "@/utils/id";
 import { TABLE_NAME_USER } from "@/utils/config";
 import { DETAIL_KEY, USER_KEY } from "@/utils/constants";
+import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 
 const findById = async (userId?: string): Promise<User | null> => {
   console.log("UserService::findById::userId::", { userId });
@@ -83,6 +84,53 @@ const create = async (user: CreateUserDTO): Promise<User> => {
   return newUser;
 };
 
+const update = async (user: UpdateUserDTO): Promise<User | null> => {
+  try {
+    console.log("UserService::update::user::", { user });
+
+    // Update an existing user
+    const now = new Date().toISOString();
+
+    // Create DynamoDB updateItem input and update the user in the database
+    const updateCommandInput: UpdateCommandInput = {
+      TableName: TABLE_NAME_USER,
+      Key: {
+        pk: `${USER_KEY}#${user.userId}`,
+        sk: DETAIL_KEY,
+      },
+      UpdateExpression: "set #firstName = :firstName, #lastName = :lastName, #email = :email, #updatedAt = :updatedAt",
+      ConditionExpression: "attribute_exists(pk)",
+      ExpressionAttributeNames: {
+        "#firstName": "firstName",
+        "#lastName": "lastName",
+        "#email": "email",
+        "#updatedAt": "updatedAt",
+      },
+      ExpressionAttributeValues: {
+        ":firstName": user.firstName,
+        ":lastName": user.lastName,
+        ":email": user.email,
+        ":updatedAt": now,
+      },
+      ReturnValues: "NONE",
+    };
+    console.log("UserService::update::updateCommandInput", { updateCommandInput });
+    await DynamoClient.updateItem(updateCommandInput);
+
+    // Fetch the updated user from the database
+    return await findById(user.userId);
+  } catch (error) {
+    console.error("UserService::update::error", { error });
+    // Handle errors
+    if (error instanceof ConditionalCheckFailedException) {
+      // Item not found
+      console.log("UserService::update::user not found");
+      return null;
+    }
+    throw error;
+  }
+};
+
 const deleteById = async (userId?: string): Promise<void> => {
   console.log("UserService::deleteById::userId::", { userId });
   // Check if userId is provided
@@ -110,4 +158,5 @@ export const UserService = {
   deleteById,
   findById,
   list,
+  update,
 };
