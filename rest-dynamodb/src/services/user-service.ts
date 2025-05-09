@@ -41,6 +41,20 @@ const findById = async (userId?: string): Promise<User | null> => {
   return user;
 };
 
+const list = async (): Promise<User[]> => {
+  console.log("UserService::list");
+  // List all users
+  // Create DynamoDB scan input and fetch all users from the database
+  const output = await DynamoClient.scanItems({
+    TableName: TABLE_NAME_USER,
+  });
+
+  // Map the items to the User type and return
+  const userItems = output.Items as UserItem[];
+  const users = map<UserItem, User>(userItems, (item) => omit(item, ["pk", "sk"]));
+  return users;
+};
+
 const create = async (user: CreateUserDTO): Promise<User> => {
   console.log("UserService::create::user::", { user });
   // Create a new user
@@ -69,22 +83,31 @@ const create = async (user: CreateUserDTO): Promise<User> => {
   return newUser;
 };
 
-const list = async (): Promise<User[]> => {
-  console.log("UserService::list");
-  // List all users
-  // Create DynamoDB scan input and fetch all users from the database
-  const output = await DynamoClient.scanItems({
-    TableName: TABLE_NAME_USER,
-  });
+const deleteById = async (userId?: string): Promise<void> => {
+  console.log("UserService::deleteById::userId::", { userId });
+  // Check if userId is provided
+  if (!userId) {
+    console.log("UserService::deleteById::nothing to do - userId is undefined");
+    return;
+  }
 
-  // Map the items to the User type and return
-  const userItems = output.Items as UserItem[];
-  const users = map<UserItem, User>(userItems, (item) => omit(item, ["pk", "sk"]));
-  return users;
+  // Delete a user by userId
+  // Create DynamoDB deleteItem input and remove the user from the database
+  const deleteCommandInput = {
+    TableName: TABLE_NAME_USER,
+    Key: {
+      pk: `${USER_KEY}#${userId}`,
+      sk: DETAIL_KEY,
+    },
+  };
+  console.log("UserService::deleteById::deleteCommandInput", { deleteCommandInput });
+  await DynamoClient.deleteItem(deleteCommandInput);
+  console.log("UserService::deleteById::user deleted");
 };
 
 export const UserService = {
   create,
+  deleteById,
   findById,
   list,
 };

@@ -1,6 +1,9 @@
 import { DynamoDBClient, DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 import {
   DynamoDBDocumentClient,
+  DeleteCommand,
+  DeleteCommandInput,
+  DeleteCommandOutput,
   GetCommand,
   GetCommandInput,
   GetCommandOutput,
@@ -36,6 +39,10 @@ const dynamoDbClientConfig: DynamoDBClientConfig = {
 const ddbClient = new DynamoDBClient(dynamoDbClientConfig);
 const ddbDocClient = DynamoDBDocumentClient.from(ddbClient, translateConfig);
 
+const deleteItem = (input: DeleteCommandInput): Promise<DeleteCommandOutput> => {
+  return ddbDocClient.send(new DeleteCommand(input));
+};
+
 const getItem = (input: GetCommandInput): Promise<GetCommandOutput> => {
   return ddbDocClient.send(new GetCommand(input));
 };
@@ -53,6 +60,7 @@ const scanItems = (input: ScanCommandInput): Promise<ScanCommandOutput> => {
 };
 
 export const DynamoClient = {
+  deleteItem,
   getItem,
   putItem,
   queryItems,

@@ -21,31 +21,23 @@ const validate = (event: APIGatewayProxyEvent): void => {
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    console.log("UsersFind::handler::", { event, env: process.env });
+    console.log("UsersDelete::handler::", { event, env: process.env });
 
     // Validate the event
     validate(event);
 
-    // Find the user in the database
+    // Delete the user from the database
     const userId = event.pathParameters?.userId;
-    const user = await UserService.findById(userId);
+    await UserService.deleteById(userId);
 
-    // Check if the user exists
-    if (user) {
-      // Return success response
-      return {
-        statusCode: 200,
-        body: JSON.stringify(user),
-      };
-    } else {
-      return {
-        statusCode: 404,
-        body: "",
-      };
-    }
+    // Return success response
+    return {
+      statusCode: 204,
+      body: "",
+    };
   } catch (error) {
     // Handle errors
-    console.error("UsersFind::error::", error);
+    console.error("UsersDelete::error::", error);
     let errorMessage = "Unknown error";
     if (error instanceof Error) {
       errorMessage = error.message;

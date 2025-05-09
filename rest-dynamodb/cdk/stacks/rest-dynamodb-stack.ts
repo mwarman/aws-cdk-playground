@@ -38,7 +38,7 @@ export class RestDynamodbStack extends cdk.Stack {
     });
     functionRole.addToPolicy(
       new iam.PolicyStatement({
-        actions: ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:Scan"],
+        actions: ["dynamodb:DeleteItem", "dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:Scan"],
         resources: [userTable.tableArn],
       })
     );
@@ -123,6 +123,29 @@ export class RestDynamodbStack extends cdk.Stack {
     });
 
     userIdResource.addMethod("GET", new apigateway.LambdaIntegration(findUserFunction));
+
+    /**
+     * Create a new Lambda function to delete a user by ID
+     */
+    const deleteUserLogGroup = new logs.LogGroup(this, "DeleteUserLogGroup", {
+      retention: logs.RetentionDays.ONE_WEEK,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
+    const deleteUserFunction = new lambda_nodejs.NodejsFunction(this, "DeleteUserFunction", {
+      entry: "src/handlers/users-delete.ts",
+      handler: "handler",
+      runtime: lambda.Runtime.NODEJS_22_X,
+      memorySize: 1024,
+      timeout: cdk.Duration.seconds(6),
+      logGroup: deleteUserLogGroup,
+      role: functionRole,
+      environment: {
+        TABLE_NAME_USER: userTable.tableName,
+      },
+    });
+
+    userIdResource.addMethod("DELETE", new apigateway.LambdaIntegration(deleteUserFunction));
 
     /**
      * Stack outputs
