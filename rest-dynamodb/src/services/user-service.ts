@@ -8,15 +8,9 @@ import { TABLE_NAME_USER } from "@/utils/config";
 import { DETAIL_KEY, USER_KEY } from "@/utils/constants";
 import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 
-const findById = async (userId?: string): Promise<User | null> => {
+const findById = async (userId: string): Promise<User | null> => {
   console.log("UserService::findById::userId::", { userId });
   // Find a user by userId
-  // Check if userId is provided
-  if (!userId) {
-    console.log("UserService::findById::userId is undefined");
-    return null;
-  }
-
   // Create DynamoDB getItem input and fetch the user from the database
   const getCommandInput: GetCommandInput = {
     TableName: TABLE_NAME_USER,
@@ -131,14 +125,8 @@ const update = async (user: UpdateUserDTO): Promise<User | null> => {
   }
 };
 
-const deleteById = async (userId?: string): Promise<void> => {
+const deleteById = async (userId: string): Promise<void> => {
   console.log("UserService::deleteById::userId::", { userId });
-  // Check if userId is provided
-  if (!userId) {
-    console.log("UserService::deleteById::nothing to do - userId is undefined");
-    return;
-  }
-
   // Delete a user by userId
   // Create DynamoDB deleteItem input and remove the user from the database
   const deleteCommandInput = {

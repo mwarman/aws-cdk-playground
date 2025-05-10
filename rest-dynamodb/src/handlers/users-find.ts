@@ -3,20 +3,22 @@ import { z } from "zod";
 
 import { UserService } from "@/services/user-service";
 
-const validate = (event: APIGatewayProxyEvent): void => {
-  const schema = z.object({
-    pathParameters: z.object({
-      userId: z.string().min(1, "userId path variable is required"),
-    }),
-  });
+const requestSchema = z.object({
+  pathParameters: z.object({
+    userId: z.string().min(1, "userId path variable is required"),
+  }),
+});
+type Request = z.infer<typeof requestSchema>;
 
-  const result = schema.safeParse(event);
+const validate = (event: APIGatewayProxyEvent): Request => {
+  const result = requestSchema.safeParse(event);
   if (!result.success) {
     const message = `Invalid request: ${result.error.errors
       .map((e) => `${e.path.join(".")}: ${e.message}`)
       .join("; ")}`;
     throw new Error(message);
   }
+  return result.data;
 };
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -24,10 +26,11 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     console.log("UsersFind::handler::", { event, env: process.env });
 
     // Validate the event
-    validate(event);
+    const request = validate(event);
+    console.log("UsersFind::request::", { request });
 
     // Find the user in the database
-    const userId = event.pathParameters?.userId;
+    const userId = request.pathParameters.userId;
     const user = await UserService.findById(userId);
 
     // Check if the user exists

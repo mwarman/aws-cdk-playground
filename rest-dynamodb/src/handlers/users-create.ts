@@ -4,22 +4,24 @@ import { z } from "zod";
 import { CreateUserDTO } from "@/types/user";
 import { UserService } from "@/services/user-service";
 
-const validate = (event: APIGatewayProxyEvent): void => {
-  const schema = z.object({
-    body: z.object({
-      firstName: z.string().min(1),
-      lastName: z.string().min(1),
-      email: z.string().email(),
-    }),
-  });
+const requestSchema = z.object({
+  body: z.object({
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+    email: z.string().email(),
+  }),
+});
+type Request = z.infer<typeof requestSchema>;
 
-  const result = schema.safeParse(event);
+const validate = (event: APIGatewayProxyEvent): Request => {
+  const result = requestSchema.safeParse(event);
   if (!result.success) {
     const message = `Invalid request: ${result.error.errors
       .map((e) => `${e.path.join(".")}: ${e.message}`)
       .join("; ")}`;
     throw new Error(message);
   }
+  return result.data;
 };
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -28,10 +30,11 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     // Validate the event
     event.body = event.body ? JSON.parse(event.body) : {};
-    validate(event);
+    const request = validate(event);
+    console.log("UsersCreate::request::", { request });
 
     // Create a new user
-    const userToCreate = event.body as unknown as CreateUserDTO;
+    const userToCreate = request.body as CreateUserDTO;
     const user = await UserService.create(userToCreate);
 
     // Return success response
