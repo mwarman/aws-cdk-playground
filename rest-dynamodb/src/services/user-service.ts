@@ -5,7 +5,7 @@ import { map, omit } from "lodash";
 import { CreateUserDTO, UpdateUserDTO, User, UserItem } from "@/types/user";
 import { DynamoClient } from "./dynamo-client";
 import { ID } from "@/utils/id";
-import { TABLE_NAME_USER } from "@/utils/config";
+import { config } from "@/utils/config";
 import { DETAIL_KEY, USER_KEY } from "@/utils/constants";
 
 const findById = async (userId: string): Promise<User | null> => {
@@ -13,7 +13,7 @@ const findById = async (userId: string): Promise<User | null> => {
   // Find a user by userId
   // Create DynamoDB getItem input and fetch the user from the database
   const getCommandInput: GetCommandInput = {
-    TableName: TABLE_NAME_USER,
+    TableName: config.TABLE_NAME_USER,
     Key: {
       pk: `${USER_KEY}#${userId}`,
       sk: DETAIL_KEY,
@@ -41,7 +41,7 @@ const list = async (): Promise<User[]> => {
   // List all users
   // Create DynamoDB scan input and fetch all users from the database
   const output = await DynamoClient.scanItems({
-    TableName: TABLE_NAME_USER,
+    TableName: config.TABLE_NAME_USER,
   });
 
   // Map the items to the User type and return
@@ -64,7 +64,7 @@ const create = async (user: CreateUserDTO): Promise<User> => {
 
   // Create DynamoDB putItem input and add the new user to the database
   const putCommandInput: PutCommandInput = {
-    TableName: TABLE_NAME_USER,
+    TableName: config.TABLE_NAME_USER,
     Item: {
       pk: `${USER_KEY}#${newUser.userId}`,
       sk: DETAIL_KEY,
@@ -87,7 +87,7 @@ const update = async (user: UpdateUserDTO): Promise<User | null> => {
 
     // Create DynamoDB updateItem input and update the user in the database
     const updateCommandInput: UpdateCommandInput = {
-      TableName: TABLE_NAME_USER,
+      TableName: config.TABLE_NAME_USER,
       Key: {
         pk: `${USER_KEY}#${user.userId}`,
         sk: DETAIL_KEY,
@@ -130,7 +130,7 @@ const deleteById = async (userId: string): Promise<void> => {
   // Delete a user by userId
   // Create DynamoDB deleteItem input and remove the user from the database
   const deleteCommandInput = {
-    TableName: TABLE_NAME_USER,
+    TableName: config.TABLE_NAME_USER,
     Key: {
       pk: `${USER_KEY}#${userId}`,
       sk: DETAIL_KEY,

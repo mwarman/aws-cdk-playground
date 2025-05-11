@@ -17,7 +17,7 @@ import {
   UpdateCommandInput,
   UpdateCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
-import { AWS_REGION } from "@/utils/config";
+import { config } from "@/utils/config";
 
 // Define the DynamoDB Document Client configuration
 // This configuration is used to translate between JavaScript objects and DynamoDB items
@@ -38,7 +38,7 @@ const translateConfig = {
 
 // Create a new DynamoDB client configuration
 const dynamoDbClientConfig: DynamoDBClientConfig = {
-  region: AWS_REGION,
+  region: config.AWS_REGION,
 };
 
 // Create a new DynamoDB client instance

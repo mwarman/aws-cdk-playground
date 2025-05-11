@@ -3,7 +3,11 @@ import { z } from "zod";
 
 import { UserService } from "@/services/user-service";
 import { UpdateUserDTO } from "@/types/user";
+import { validate } from "@/utils/validation";
 
+/**
+ * Zod schema for validating the request
+ */
 const requestSchema = z
   .object({
     body: z.object({
@@ -26,17 +30,11 @@ const requestSchema = z
   );
 type Request = z.infer<typeof requestSchema>;
 
-const validate = (event: APIGatewayProxyEvent): Request => {
-  const result = requestSchema.safeParse(event);
-  if (!result.success) {
-    const message = `Invalid request: ${result.error.errors
-      .map((e) => `${e.path.join(".")}: ${e.message}`)
-      .join("; ")}`;
-    throw new Error(message);
-  }
-  return result.data;
-};
-
+/**
+ * Handler for updating a user
+ * @param event - The API Gateway event
+ * @returns The API Gateway response
+ */
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     console.log("UsersUpdate::handler::", { event, env: process.env });
@@ -44,7 +42,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     // Validate the event
     event.body = event.body ? JSON.parse(event.body) : {};
     event.pathParameters = event.pathParameters || {};
-    const request = validate(event);
+    const request = validate<APIGatewayProxyEvent, Request>(requestSchema, event);
     console.log("UsersUpdate::request::", { request });
 
     // Update the user in the database

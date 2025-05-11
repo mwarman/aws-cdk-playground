@@ -2,7 +2,11 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { z } from "zod";
 
 import { UserService } from "@/services/user-service";
+import { validate } from "@/utils/validation";
 
+/**
+ * Zod schema for validating the request
+ */
 const requestSchema = z.object({
   pathParameters: z.object({
     userId: z.string().min(1, "userId path variable is required"),
@@ -10,23 +14,17 @@ const requestSchema = z.object({
 });
 type Request = z.infer<typeof requestSchema>;
 
-const validate = (event: APIGatewayProxyEvent): Request => {
-  const result = requestSchema.safeParse(event);
-  if (!result.success) {
-    const message = `Invalid request: ${result.error.errors
-      .map((e) => `${e.path.join(".")}: ${e.message}`)
-      .join("; ")}`;
-    throw new Error(message);
-  }
-  return result.data;
-};
-
+/**
+ * Handler for deleting a user
+ * @param event - The API Gateway event
+ * @returns The API Gateway response
+ */
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     console.log("UsersFind::handler::", { event, env: process.env });
 
     // Validate the event
-    const request = validate(event);
+    const request = validate<APIGatewayProxyEvent, Request>(requestSchema, event);
     console.log("UsersFind::request::", { request });
 
     // Find the user in the database

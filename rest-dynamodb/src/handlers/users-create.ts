@@ -3,7 +3,11 @@ import { z } from "zod";
 
 import { CreateUserDTO } from "@/types/user";
 import { UserService } from "@/services/user-service";
+import { validate } from "@/utils/validation";
 
+/**
+ * Zod schema for validating the request
+ */
 const requestSchema = z.object({
   body: z.object({
     firstName: z.string().min(1),
@@ -13,24 +17,18 @@ const requestSchema = z.object({
 });
 type Request = z.infer<typeof requestSchema>;
 
-const validate = (event: APIGatewayProxyEvent): Request => {
-  const result = requestSchema.safeParse(event);
-  if (!result.success) {
-    const message = `Invalid request: ${result.error.errors
-      .map((e) => `${e.path.join(".")}: ${e.message}`)
-      .join("; ")}`;
-    throw new Error(message);
-  }
-  return result.data;
-};
-
+/**
+ * Handler for creating a new user
+ * @param event - The API Gateway event
+ * @returns The API Gateway response
+ */
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     console.log("UsersCreate::handler::", { event, env: process.env });
 
     // Validate the event
     event.body = event.body ? JSON.parse(event.body) : {};
-    const request = validate(event);
+    const request = validate<APIGatewayProxyEvent, Request>(requestSchema, event);
     console.log("UsersCreate::request::", { request });
 
     // Create a new user
