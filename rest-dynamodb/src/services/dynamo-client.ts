@@ -19,6 +19,10 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { AWS_REGION } from "@/utils/config";
 
+// Define the DynamoDB Document Client configuration
+// This configuration is used to translate between JavaScript objects and DynamoDB items
+// The marshallOptions and unmarshallOptions are used to control how the data is converted
+// when sending and receiving data to and from DynamoDB
 const marshallOptions = {
   convertClassInstanceToMap: true,
   convertEmptyValues: false,
@@ -32,10 +36,15 @@ const translateConfig = {
   unmarshallOptions,
 };
 
+// Create a new DynamoDB client configuration
 const dynamoDbClientConfig: DynamoDBClientConfig = {
   region: AWS_REGION,
 };
 
+// Create a new DynamoDB client instance
+// This client is used to interact with the DynamoDB service
+// The DynamoDBDocumentClient is a higher-level client that simplifies working with DynamoDB
+// by providing a more user-friendly API for common operations
 const ddbClient = new DynamoDBClient(dynamoDbClientConfig);
 const ddbDocClient = DynamoDBDocumentClient.from(ddbClient, translateConfig);
 

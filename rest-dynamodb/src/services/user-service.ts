@@ -1,4 +1,5 @@
 import { GetCommandInput, PutCommandInput, UpdateCommandInput } from "@aws-sdk/lib-dynamodb";
+import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import { map, omit } from "lodash";
 
 import { CreateUserDTO, UpdateUserDTO, User, UserItem } from "@/types/user";
@@ -6,7 +7,6 @@ import { DynamoClient } from "./dynamo-client";
 import { ID } from "@/utils/id";
 import { TABLE_NAME_USER } from "@/utils/config";
 import { DETAIL_KEY, USER_KEY } from "@/utils/constants";
-import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 
 const findById = async (userId: string): Promise<User | null> => {
   console.log("UserService::findById::userId::", { userId });

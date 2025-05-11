@@ -1,5 +1,11 @@
 import { z } from "zod"; // Import zod for schema validation
 
+/**
+ * Configuration schema for the application.
+ * This schema defines the expected environment variables and their types.
+ * It uses zod for validation and provides default values.
+ * If the validation fails, an error is thrown with a detailed message.
+ */
 const configSchema = z.object({
   AWS_REGION: z.string().default("us-east-1"),
   TABLE_NAME_USER: z.string().default("User"),

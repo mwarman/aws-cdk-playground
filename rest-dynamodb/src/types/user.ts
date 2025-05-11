@@ -1,3 +1,9 @@
+/**
+ * Keys type definition
+ * @typedef {Object} Keys
+ * @property {string} pk - The partition key for the DynamoDB table
+ * @property {string} [sk] - The sort key for the DynamoDB table (optional)
+ */
 export type Keys = {
   pk: string;
   sk?: string;
@@ -22,8 +28,22 @@ export type User = {
   updatedAt: string;
 };
 
+/**
+ * UserItem type definition representing a user in the DynamoDB table
+ * @typedef {Object} UserItem
+ * @property {Keys} keys - The keys for the DynamoDB table
+ * @property {User} user - The user object
+ */
 export type UserItem = Keys & User;
 
+/**
+ * CreateUserDTO type definition for creating a new user
+ * @typedef {Omit<User, "userId" | "createdAt" | "updatedAt">} CreateUserDTO
+ */
 export type CreateUserDTO = Omit<User, "userId" | "createdAt" | "updatedAt">;
 
+/**
+ * UpdateUserDTO type definition for updating an existing user
+ * @typedef {Pick<User, "userId" | "firstName" | "lastName" | "email">} UpdateUserDTO
+ */
 export type UpdateUserDTO = Pick<User, "userId" | "firstName" | "lastName" | "email">;
