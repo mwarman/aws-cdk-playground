@@ -1,0 +1,27 @@
+{
+  "name": "rest-multi-auth",
+  "description": "A multi-component REST API using AWS CDK.",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc",
+    "cdk": "cdk",
+    "clean": "rimraf cdk.out dist coverage",
+    "watch": "tsc -w",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "29.5.14",
+    "@types/node": "22.15.17",
+    "aws-cdk": "2.1014.0",
+    "aws-cdk-lib": "2.195.0",
+    "constructs": "10.4.2",
+    "dotenv": "16.5.0",
+    "jest": "29.7.0",
+    "rimraf": "6.0.1",
+    "ts-jest": "29.3.2",
+    "ts-node": "10.9.2",
+    "typescript": "5.8.3",
+    "zod": "3.24.4"
+  },
+  "dependencies": {}
+}
