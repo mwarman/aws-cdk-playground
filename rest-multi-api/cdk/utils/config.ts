@@ -9,8 +9,11 @@ import { z } from "zod"; // Import zod for schema validation
 // The environment variables are loaded from a .env file using the dotenv library.
 // The .env file should be located in the '/cdk' directory of the project.
 const configSchema = z.object({
+  CDK_AWS_HOSTED_ZONE_ID: z.string().min(1),
+  CDK_AWS_HOSTED_ZONE_NAME: z.string().min(1),
   CDK_AWS_REGION: z.string().default("us-east-1"),
-  CDK_DEFAULT_ACCOUNT: z.string(),
+  CDK_AWS_CERTIFICATE_ARN: z.string().min(1),
+  CDK_DEFAULT_ACCOUNT: z.string().min(1),
   CDK_DEFAULT_REGION: z.string(),
   CDK_ENV: z.enum(["dev", "qa", "prod"]).default("dev"),
 });
@@ -24,4 +27,12 @@ if (!config.success) {
   throw new Error(message);
 }
 
-export const { CDK_AWS_REGION, CDK_DEFAULT_ACCOUNT, CDK_DEFAULT_REGION, CDK_ENV } = config.data;
+export const {
+  CDK_AWS_HOSTED_ZONE_ID,
+  CDK_AWS_HOSTED_ZONE_NAME,
+  CDK_AWS_REGION,
+  CDK_AWS_CERTIFICATE_ARN,
+  CDK_DEFAULT_ACCOUNT,
+  CDK_DEFAULT_REGION,
+  CDK_ENV,
+} = config.data;
